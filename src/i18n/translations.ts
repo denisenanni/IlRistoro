@@ -40,6 +40,11 @@ export const translations = {
     orderConfirmation: "Il tuo ordine è stato ricevuto. Ti aspettiamo all'orario indicato!",
     newOrder: 'Nuovo ordine',
 
+    // Gallery
+    gallery: 'Galleria',
+    photosComingSoon: 'Foto in arrivo...',
+    swipeToNavigate: 'Scorri per navigare',
+
     // Product
     priceNotSet: 'Prezzo da definire',
   },
@@ -83,6 +88,11 @@ export const translations = {
     orderSent: 'Order sent!',
     orderConfirmation: 'Your order has been received. See you at the pickup time!',
     newOrder: 'New order',
+
+    // Gallery
+    gallery: 'Gallery',
+    photosComingSoon: 'Photos coming soon...',
+    swipeToNavigate: 'Swipe to navigate',
 
     // Product
     priceNotSet: 'Price TBD',

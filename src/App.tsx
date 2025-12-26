@@ -7,10 +7,11 @@ import { Menu } from './components/Menu';
 import { Cart } from './components/Cart';
 import { OrderForm } from './components/OrderForm';
 import { Confirmation } from './components/Confirmation';
+import { Gallery } from './components/Gallery';
 import { formatOrderMessage } from './utils/formatters';
 import { sendOrder } from './utils/api';
 
-type View = 'menu' | 'checkout' | 'confirmation';
+type View = 'menu' | 'checkout' | 'confirmation' | 'gallery';
 
 function AppContent() {
   const [view, setView] = useState<View>('menu');
@@ -36,6 +37,10 @@ function AppContent() {
     setView('menu');
   };
 
+  if (view === 'gallery') {
+    return <Gallery onBack={() => setView('menu')} />;
+  }
+
   if (view === 'confirmation') {
     return <Confirmation onNewOrder={handleNewOrder} />;
   }
@@ -53,7 +58,11 @@ function AppContent() {
 
   return (
     <div className="min-h-screen bg-stone-50 flex flex-col">
-      <Header cartCount={cart.itemCount} onCartClick={() => setIsCartOpen(true)} />
+      <Header
+        cartCount={cart.itemCount}
+        onCartClick={() => setIsCartOpen(true)}
+        onGalleryClick={() => setView('gallery')}
+      />
       <Menu onAddToCart={cart.addItem} />
       <Cart
         isOpen={isCartOpen}

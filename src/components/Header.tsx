@@ -1,14 +1,15 @@
 import { useLanguage } from '../i18n/LanguageContext';
 import { LanguageToggle } from './LanguageToggle';
-import { LocationIcon, CartIcon } from './icons';
+import { LocationIcon, CartIcon, GalleryIcon } from './icons';
 import { CONFIG } from '../constants/config';
 
 interface HeaderProps {
   cartCount: number;
   onCartClick: () => void;
+  onGalleryClick: () => void;
 }
 
-export function Header({ cartCount, onCartClick }: HeaderProps) {
+export function Header({ cartCount, onCartClick, onGalleryClick }: HeaderProps) {
   const { t } = useLanguage();
   const hasItems = cartCount > 0;
 
@@ -24,6 +25,13 @@ export function Header({ cartCount, onCartClick }: HeaderProps) {
         </div>
         <div className="flex items-center gap-1">
           <LanguageToggle />
+          <button
+            onClick={onGalleryClick}
+            className="p-2 rounded-full hover:bg-stone-100 transition-colors"
+            aria-label="View gallery"
+          >
+            <GalleryIcon className="h-6 w-6 text-[#7B2D34]" />
+          </button>
           <a
             href={CONFIG.googleMapsUrl}
             target="_blank"
