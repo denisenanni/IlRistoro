@@ -1,8 +1,27 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import type { CartItem, Product } from '../types';
 
+const CART_STORAGE_KEY = 'il-ristoro-cart';
+
 export function useCart() {
-  const [items, setItems] = useState<CartItem[]>([]);
+  const [items, setItems] = useState<CartItem[]>(() => {
+    // Load cart from localStorage on initialization
+    try {
+      const saved = localStorage.getItem(CART_STORAGE_KEY);
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  // Save cart to localStorage whenever it changes
+  useEffect(() => {
+    try {
+      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
+    } catch {
+      // Ignore localStorage errors (e.g., quota exceeded)
+    }
+  }, [items]);
 
   const addItem = useCallback((product: Product) => {
     setItems((prev) => {
@@ -38,10 +57,11 @@ export function useCart() {
     setItems([]);
   }, []);
 
-  const total = items.reduce(
-    (sum, item) => sum + item.product.price * item.quantity,
-    0
-  );
+  // Calculate total in cents to avoid floating point errors, then convert to euros
+  const total = items.reduce((sum, item) => {
+    const priceInCents = Math.round(item.product.price * 100);
+    return sum + priceInCents * item.quantity;
+  }, 0) / 100;
 
   const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
 

@@ -7,6 +7,8 @@ import { Menu } from './components/Menu';
 import { Cart } from './components/Cart';
 import { OrderForm } from './components/OrderForm';
 import { Confirmation } from './components/Confirmation';
+import { formatOrderMessage } from './utils/formatters';
+import { sendOrder } from './utils/api';
 
 type View = 'menu' | 'checkout' | 'confirmation';
 
@@ -16,39 +18,16 @@ function AppContent() {
   const cart = useCart();
 
   const handleCheckout = () => {
+    if (cart.items.length === 0) return;
     setIsCartOpen(false);
     setView('checkout');
   };
 
   const handleSubmitOrder = async (data: OrderData) => {
-    // Format order message for Telegram
-    const itemsList = cart.items
-      .map((item) => `${item.quantity}x ${item.product.name} - €${(item.product.price * item.quantity).toFixed(2)}`)
-      .join('\n');
-
-    const message = `🛒 *Nuovo Ordine!*
-
-${itemsList}
-
-━━━━━━━━━━━━━━━━
-*Totale: €${cart.total.toFixed(2)}*
-
-👤 *Nome:* ${data.name}
-📞 *Telefono:* ${data.phone}
-${data.pickupTime ? `🕐 *Ritiro:* ${data.pickupTime}` : ''}
-${data.notes ? `📝 *Note:* ${data.notes}` : ''}`.trim();
-
-    // Send to serverless function
-    const response = await fetch('/api/order', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message }),
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to send order');
-    }
-
+    const message = formatOrderMessage(cart.items, cart.total, data);
+    // Don't clear cart or change view until order is successfully sent
+    await sendOrder(message);
+    // Only clear cart and show confirmation if no error was thrown
     cart.clearCart();
     setView('confirmation');
   };

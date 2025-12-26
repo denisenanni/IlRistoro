@@ -1,5 +1,7 @@
 import type { Product } from '../types';
 import { useLanguage } from '../i18n/LanguageContext';
+import { PlusIcon } from './icons';
+import { formatPrice } from '../utils/formatters';
 
 interface ProductCardProps {
   product: Product;
@@ -10,6 +12,8 @@ export function ProductCard({ product, onAdd }: ProductCardProps) {
   const { t } = useLanguage();
   const isPriceSet = product.price > 0;
 
+  const handleAdd = () => onAdd(product);
+
   return (
     <div className="bg-white rounded-xl p-4 shadow-sm border border-stone-100 flex justify-between items-start gap-3">
       <div className="flex-1 min-w-0">
@@ -18,28 +22,20 @@ export function ProductCard({ product, onAdd }: ProductCardProps) {
           <p className="text-sm text-stone-500 mt-1 line-clamp-2">{product.description}</p>
         )}
         <p className="text-[#7B2D34] font-semibold mt-2">
-          {isPriceSet ? `€${product.price.toFixed(2)}` : t('priceNotSet')}
+          {isPriceSet ? formatPrice(product.price) : t('priceNotSet')}
         </p>
       </div>
       <button
-        onClick={() => onAdd(product)}
+        onClick={handleAdd}
         disabled={!isPriceSet}
         className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center transition-colors ${
           isPriceSet
             ? 'bg-[#7B2D34] text-white hover:bg-[#5f2329]'
             : 'bg-stone-200 text-stone-400 cursor-not-allowed'
         }`}
+        aria-label={`Add ${product.name} to cart`}
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-5 w-5"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth={2}
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-        </svg>
+        <PlusIcon className="h-5 w-5" />
       </button>
     </div>
   );

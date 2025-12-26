@@ -125,7 +125,7 @@ Edit `src/data/products.ts` to update prices or add items.
 ### 5. Run Locally
 
 ```bash
-yarn dev # or npx vercel dev
+npx vercel dev
 ```
 
 ### 6. Deploy to Vercel
@@ -148,7 +148,7 @@ Generate a QR code for your Vercel URL and display it in the shop!
 Edit `src/data/products.ts` and redeploy:
 
 ```bash
-vercel --prod # or npx vercel --prod
+npx vercel --prod
 ```
 
 ## Cost

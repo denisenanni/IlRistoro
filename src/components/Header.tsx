@@ -1,5 +1,7 @@
 import { useLanguage } from '../i18n/LanguageContext';
 import { LanguageToggle } from './LanguageToggle';
+import { LocationIcon, CartIcon } from './icons';
+import { CONFIG } from '../constants/config';
 
 interface HeaderProps {
   cartCount: number;
@@ -8,12 +10,13 @@ interface HeaderProps {
 
 export function Header({ cartCount, onCartClick }: HeaderProps) {
   const { t } = useLanguage();
+  const hasItems = cartCount > 0;
 
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-stone-200 shadow-sm">
       <div className="max-w-lg mx-auto px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <img src="/logo.jpg" alt="Il Ristoro di Ercole" className="h-10 w-10 object-contain" />
+          <img src={CONFIG.logoPath} alt={CONFIG.shopName} className="h-10 w-10 object-contain" />
           <div>
             <h1 className="text-lg font-semibold text-[#7B2D34]">{t('shopName')}</h1>
             <p className="text-xs text-stone-500">{t('shopSubtitle')}</p>
@@ -22,51 +25,20 @@ export function Header({ cartCount, onCartClick }: HeaderProps) {
         <div className="flex items-center gap-1">
           <LanguageToggle />
           <a
-            href="https://maps.app.goo.gl/wJjb5Jn4Be6bYQuS7"
+            href={CONFIG.googleMapsUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="p-2 rounded-full hover:bg-stone-100 transition-colors"
             aria-label="View location on Google Maps"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6 text-[#7B2D34]"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-              />
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-              />
-            </svg>
+            <LocationIcon className="h-6 w-6 text-[#7B2D34]" />
           </a>
           <button
             onClick={onCartClick}
             className="relative p-2 rounded-full hover:bg-stone-100 transition-colors"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6 text-[#7B2D34]"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
-              />
-            </svg>
-            {cartCount > 0 && (
+            <CartIcon className="h-6 w-6 text-[#7B2D34]" />
+            {hasItems && (
               <span className="absolute -top-1 -right-1 bg-[#7B2D34] text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
                 {cartCount}
               </span>
