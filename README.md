@@ -2,6 +2,8 @@
 
 A simple Progressive Web App (PWA) for receiving orders via Telegram notifications.
 
+**Live Demo:** https://il-ristoro.vercel.app/
+
 ## Architecture
 
 ```
