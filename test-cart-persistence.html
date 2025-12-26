@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Cart Persistence Test</title>
+  <style>
+    body { font-family: monospace; padding: 20px; }
+    .success { color: green; }
+    .error { color: red; }
+    .info { color: blue; }
+    button { margin: 5px; padding: 10px; }
+  </style>
+</head>
+<body>
+  <h1>Cart Persistence Test</h1>
+  <div id="output"></div>
+  <br>
+  <button onclick="testSave()">Test Save to LocalStorage</button>
+  <button onclick="testLoad()">Test Load from LocalStorage</button>
+  <button onclick="testClear()">Clear LocalStorage</button>
+  <button onclick="window.location.reload()">Refresh Page</button>
+
+  <script>
+    const CART_STORAGE_KEY = 'il-ristoro-cart';
+    const output = document.getElementById('output');
+
+    function log(message, type = 'info') {
+      const div = document.createElement('div');
+      div.className = type;
+      div.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+      output.appendChild(div);
+    }
+
+    function testSave() {
+      log('Testing cart save...', 'info');
+
+      const testCart = [
+        {
+          product: { id: '1', name: 'Test Pizza', price: 10.50, category: 'pinse-bianche' },
+          quantity: 2
+        },
+        {
+          product: { id: '2', name: 'Test Beer', price: 3.00, category: 'birre' },
+          quantity: 1
+        }
+      ];
+
+      try {
+        localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(testCart));
+        log('✓ Cart saved successfully', 'success');
+        log(`Saved ${testCart.length} items`, 'info');
+
+        // Verify it was saved
+        const saved = localStorage.getItem(CART_STORAGE_KEY);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          log(`✓ Verified: ${parsed.length} items in storage`, 'success');
+        }
+      } catch (err) {
+        log(`✗ Error saving cart: ${err.message}`, 'error');
+      }
+    }
+
+    function testLoad() {
+      log('Testing cart load...', 'info');
+
+      try {
+        const saved = localStorage.getItem(CART_STORAGE_KEY);
+
+        if (!saved) {
+          log('⚠ No cart found in localStorage', 'error');
+          return;
+        }
+
+        const cart = JSON.parse(saved);
+        log(`✓ Cart loaded successfully`, 'success');
+        log(`Found ${cart.length} items:`, 'info');
+
+        cart.forEach((item, i) => {
+          log(`  ${i + 1}. ${item.quantity}x ${item.product.name} - €${item.product.price}`, 'info');
+        });
+
+        const total = cart.reduce((sum, item) => {
+          const priceInCents = Math.round(item.product.price * 100);
+          return sum + priceInCents * item.quantity;
+        }, 0) / 100;
+
+        log(`Total: €${total.toFixed(2)}`, 'success');
+      } catch (err) {
+        log(`✗ Error loading cart: ${err.message}`, 'error');
+      }
+    }
+
+    function testClear() {
+      log('Clearing localStorage...', 'info');
+      localStorage.removeItem(CART_STORAGE_KEY);
+      log('✓ localStorage cleared', 'success');
+    }
+
+    // Auto-load on page load
+    window.onload = () => {
+      log('Page loaded, checking for existing cart...', 'info');
+      const existing = localStorage.getItem(CART_STORAGE_KEY);
+      if (existing) {
+        log('Found existing cart data!', 'success');
+        testLoad();
+      } else {
+        log('No cart data found. Click "Test Save" to create one.', 'info');
+      }
+    };
+  </script>
+</body>
+</html>

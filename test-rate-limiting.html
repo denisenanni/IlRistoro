@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Rate Limiting Test</title>
+  <style>
+    body { font-family: monospace; padding: 20px; }
+    .success { color: green; }
+    .error { color: red; }
+    .warning { color: orange; }
+    .info { color: blue; }
+    button { margin: 5px; padding: 10px; font-size: 14px; }
+    #output { margin-top: 20px; max-height: 400px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; }
+    .stats { background: #f0f0f0; padding: 10px; margin: 10px 0; border-radius: 5px; }
+  </style>
+</head>
+<body>
+  <h1>Rate Limiting Test</h1>
+  <p>Testing: 5 requests per minute per IP</p>
+
+  <div class="stats">
+    <div>Total Requests: <span id="totalRequests">0</span></div>
+    <div>Successful: <span id="successCount">0</span></div>
+    <div>Rate Limited (429): <span id="rateLimitCount">0</span></div>
+    <div>Errors: <span id="errorCount">0</span></div>
+  </div>
+
+  <button onclick="sendSingleRequest()">Send 1 Request</button>
+  <button onclick="sendBurst(10)">Send 10 Rapid Requests</button>
+  <button onclick="sendBurst(20)">Send 20 Rapid Requests</button>
+  <button onclick="clearOutput()">Clear Output</button>
+
+  <div id="output"></div>
+
+  <script>
+    const output = document.getElementById('output');
+    let stats = {
+      total: 0,
+      success: 0,
+      rateLimit: 0,
+      error: 0
+    };
+
+    function updateStats() {
+      document.getElementById('totalRequests').textContent = stats.total;
+      document.getElementById('successCount').textContent = stats.success;
+      document.getElementById('rateLimitCount').textContent = stats.rateLimit;
+      document.getElementById('errorCount').textContent = stats.error;
+    }
+
+    function log(message, type = 'info') {
+      const div = document.createElement('div');
+      div.className = type;
+      div.textContent = `[${new Date().toLocaleTimeString()}.${Date.now() % 1000}] ${message}`;
+      output.insertBefore(div, output.firstChild);
+    }
+
+    function clearOutput() {
+      output.innerHTML = '';
+      stats = { total: 0, success: 0, rateLimit: 0, error: 0 };
+      updateStats();
+      log('Output cleared', 'info');
+    }
+
+    async function sendSingleRequest() {
+      await sendRequest();
+    }
+
+    async function sendBurst(count) {
+      log(`Starting burst of ${count} requests...`, 'info');
+
+      for (let i = 0; i < count; i++) {
+        await sendRequest(i + 1, count);
+        // Small delay to avoid overwhelming the browser
+        await new Promise(resolve => setTimeout(resolve, 50));
+      }
+
+      log(`Burst complete: ${count} requests sent`, 'info');
+    }
+
+    async function sendRequest(num = null, total = null) {
+      stats.total++;
+      updateStats();
+
+      const testMessage = `🛒 *Test Order ${stats.total}*
+
+1x Test Pizza - €10.50
+
+━━━━━━━━━━━━━━━━
+*Totale: €10.50*
+
+👤 *Nome:* Test User
+📞 *Telefono:* +39 123 456 7890
+📝 *Note:* Rate limit test ${num ? `(${num}/${total})` : ''}`;
+
+      try {
+        const response = await fetch('/api/order', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: testMessage }),
+        });
+
+        const data = await response.json();
+
+        if (response.status === 429) {
+          stats.rateLimit++;
+          log(`✗ Request ${stats.total}: RATE LIMITED (429) - ${data.error}`, 'warning');
+        } else if (response.ok) {
+          stats.success++;
+          log(`✓ Request ${stats.total}: SUCCESS (200)`, 'success');
+        } else {
+          stats.error++;
+          log(`✗ Request ${stats.total}: ERROR (${response.status}) - ${data.error || 'Unknown error'}`, 'error');
+        }
+      } catch (err) {
+        stats.error++;
+        log(`✗ Request ${stats.total}: NETWORK ERROR - ${err.message}`, 'error');
+      }
+
+      updateStats();
+    }
+
+    // Initial log
+    log('Rate Limiting Test Ready', 'info');
+    log('Expected behavior: First 5 requests succeed, then 429 errors for 1 minute', 'info');
+  </script>
+</body>
+</html>

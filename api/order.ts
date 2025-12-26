@@ -1,25 +1,76 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'fs';
+import { join } from 'path';
 
-// Simple in-memory rate limiter (resets on cold starts)
-const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
 const RATE_LIMIT = 5; // Max requests
 const RATE_WINDOW = 60 * 1000; // 1 minute
+const RATE_LIMIT_FILE = join(process.cwd(), '.vercel/cache/rate-limits.json');
+
+// Ensure cache directory exists
+try {
+  mkdirSync(join(process.cwd(), '.vercel/cache'), { recursive: true });
+} catch (e) {
+  // Directory might already exist
+}
+
+interface RateLimitRecord {
+  count: number;
+  resetTime: number;
+}
+
+interface RateLimitData {
+  [key: string]: RateLimitRecord;
+}
+
+function loadRateLimits(): RateLimitData {
+  try {
+    if (existsSync(RATE_LIMIT_FILE)) {
+      const data = readFileSync(RATE_LIMIT_FILE, 'utf-8');
+      return JSON.parse(data);
+    }
+  } catch (error) {
+    console.error('[RATE LIMIT] Error loading rate limits:', error);
+  }
+  return {};
+}
+
+function saveRateLimits(data: RateLimitData): void {
+  try {
+    writeFileSync(RATE_LIMIT_FILE, JSON.stringify(data, null, 2));
+  } catch (error) {
+    console.error('[RATE LIMIT] Error saving rate limits:', error);
+  }
+}
 
 function checkRateLimit(identifier: string): boolean {
   const now = Date.now();
-  const record = rateLimitMap.get(identifier);
+  const rateLimits = loadRateLimits();
+  const record = rateLimits[identifier];
+
+  console.log(`[RATE LIMIT] IP: ${identifier}, Record:`, record);
 
   if (!record || now > record.resetTime) {
-    // New window
-    rateLimitMap.set(identifier, { count: 1, resetTime: now + RATE_WINDOW });
+    // New window - start with count of 1
+    rateLimits[identifier] = { count: 1, resetTime: now + RATE_WINDOW };
+    saveRateLimits(rateLimits);
+    console.log(`[RATE LIMIT] New window created, count: 1`);
     return true;
   }
 
-  if (record.count >= RATE_LIMIT) {
-    return false; // Rate limit exceeded
+  // Increment FIRST to prevent race conditions
+  record.count++;
+  console.log(`[RATE LIMIT] Incremented count to: ${record.count}, limit: ${RATE_LIMIT}`);
+
+  // Check if we've exceeded the limit
+  if (record.count > RATE_LIMIT) {
+    console.log(`[RATE LIMIT] ❌ BLOCKED - exceeded limit`);
+    return false;
   }
 
-  record.count++;
+  // Save updated count
+  rateLimits[identifier] = record;
+  saveRateLimits(rateLimits);
+  console.log(`[RATE LIMIT] ✓ ALLOWED`);
   return true;
 }
 
@@ -47,6 +98,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   // Validate message length (prevent massive messages)
   if (message.length > 4000) {
     return res.status(400).json({ error: 'Message too long' });
+  }
+
+  // Test mode: skip Telegram if TEST_MODE is set
+  const TEST_MODE = process.env.TEST_MODE === 'true';
+
+  if (TEST_MODE) {
+    console.log(`[TEST MODE] Would send message: ${message.substring(0, 50)}...`);
+    return res.status(200).json({ success: true, testMode: true });
   }
 
   const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
