@@ -1,4 +1,5 @@
 import type { CartItem } from '../types';
+import { useLanguage } from '../i18n/LanguageContext';
 
 interface CartProps {
   isOpen: boolean;
@@ -19,6 +20,7 @@ export function Cart({
   onRemove,
   onCheckout,
 }: CartProps) {
+  const { t } = useLanguage();
   return (
     <>
       {/* Backdrop */}
@@ -38,7 +40,7 @@ export function Cart({
         <div className="flex flex-col h-full">
           {/* Header */}
           <div className="flex items-center justify-between px-4 py-4 border-b border-stone-200">
-            <h2 className="text-lg font-semibold text-stone-900">Il tuo ordine</h2>
+            <h2 className="text-lg font-semibold text-stone-900">{t('cart')}</h2>
             <button
               onClick={onClose}
               className="p-2 rounded-full hover:bg-stone-100 transition-colors"
@@ -74,7 +76,7 @@ export function Cart({
                     d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
                   />
                 </svg>
-                <p className="mt-4 text-stone-500">Il carrello è vuoto</p>
+                <p className="mt-4 text-stone-500">{t('emptyCart')}</p>
               </div>
             ) : (
               <div className="space-y-4">
@@ -157,14 +159,14 @@ export function Cart({
           {items.length > 0 && (
             <div className="border-t border-stone-200 p-4 space-y-4">
               <div className="flex justify-between items-center">
-                <span className="text-lg font-semibold text-stone-900">Totale</span>
+                <span className="text-lg font-semibold text-stone-900">{t('total')}</span>
                 <span className="text-xl font-bold text-[#7B2D34]">€{total.toFixed(2)}</span>
               </div>
               <button
                 onClick={onCheckout}
                 className="w-full py-3 bg-[#7B2D34] text-white font-semibold rounded-xl hover:bg-[#5f2329] transition-colors"
               >
-                Procedi all'ordine
+                {t('checkout')}
               </button>
             </div>
           )}

@@ -1,8 +1,12 @@
+import { useLanguage } from '../i18n/LanguageContext';
+
 interface ConfirmationProps {
   onNewOrder: () => void;
 }
 
 export function Confirmation({ onNewOrder }: ConfirmationProps) {
+  const { t } = useLanguage();
+
   return (
     <div className="min-h-screen bg-stone-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl p-8 shadow-lg border border-stone-100 text-center max-w-sm w-full">
@@ -18,15 +22,15 @@ export function Confirmation({ onNewOrder }: ConfirmationProps) {
             <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
           </svg>
         </div>
-        <h1 className="text-2xl font-bold text-stone-900 mb-2">Ordine inviato!</h1>
+        <h1 className="text-2xl font-bold text-stone-900 mb-2">{t('orderSent')}</h1>
         <p className="text-stone-600 mb-6">
-          Il tuo ordine è stato ricevuto. Ti aspettiamo all'orario indicato!
+          {t('orderConfirmation')}
         </p>
         <button
           onClick={onNewOrder}
           className="w-full py-3 bg-[#7B2D34] text-white font-semibold rounded-xl hover:bg-[#5f2329] transition-colors"
         >
-          Nuovo ordine
+          {t('newOrder')}
         </button>
       </div>
     </div>

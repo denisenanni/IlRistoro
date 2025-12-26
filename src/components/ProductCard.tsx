@@ -1,4 +1,5 @@
 import type { Product } from '../types';
+import { useLanguage } from '../i18n/LanguageContext';
 
 interface ProductCardProps {
   product: Product;
@@ -6,6 +7,7 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product, onAdd }: ProductCardProps) {
+  const { t } = useLanguage();
   const isPriceSet = product.price > 0;
 
   return (
@@ -16,7 +18,7 @@ export function ProductCard({ product, onAdd }: ProductCardProps) {
           <p className="text-sm text-stone-500 mt-1 line-clamp-2">{product.description}</p>
         )}
         <p className="text-[#7B2D34] font-semibold mt-2">
-          {isPriceSet ? `€${product.price.toFixed(2)}` : 'Prezzo da definire'}
+          {isPriceSet ? `€${product.price.toFixed(2)}` : t('priceNotSet')}
         </p>
       </div>
       <button

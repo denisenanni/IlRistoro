@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useCart } from './hooks/useCart';
 import type { OrderData } from './types';
+import { LanguageProvider } from './i18n/LanguageContext';
 import { Header } from './components/Header';
 import { Menu } from './components/Menu';
 import { Cart } from './components/Cart';
@@ -9,7 +10,7 @@ import { Confirmation } from './components/Confirmation';
 
 type View = 'menu' | 'checkout' | 'confirmation';
 
-function App() {
+function AppContent() {
   const [view, setView] = useState<View>('menu');
   const [isCartOpen, setIsCartOpen] = useState(false);
   const cart = useCart();
@@ -85,6 +86,14 @@ ${data.notes ? `📝 *Note:* ${data.notes}` : ''}`.trim();
         onCheckout={handleCheckout}
       />
     </div>
+  );
+}
+
+function App() {
+  return (
+    <LanguageProvider>
+      <AppContent />
+    </LanguageProvider>
   );
 }
 

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { CartItem, OrderData } from '../types';
+import { useLanguage } from '../i18n/LanguageContext';
 
 interface OrderFormProps {
   items: CartItem[];
@@ -9,6 +10,7 @@ interface OrderFormProps {
 }
 
 export function OrderForm({ items, total, onBack, onSubmit }: OrderFormProps) {
+  const { t } = useLanguage();
   const [formData, setFormData] = useState<OrderData>({
     name: '',
     phone: '',
@@ -26,7 +28,7 @@ export function OrderForm({ items, total, onBack, onSubmit }: OrderFormProps) {
     try {
       await onSubmit(formData);
     } catch (err) {
-      setError("Errore nell'invio dell'ordine. Riprova.");
+      setError(t('orderError'));
     } finally {
       setIsSubmitting(false);
     }
@@ -52,14 +54,14 @@ export function OrderForm({ items, total, onBack, onSubmit }: OrderFormProps) {
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
             </svg>
           </button>
-          <h1 className="text-lg font-semibold text-stone-900">Completa l'ordine</h1>
+          <h1 className="text-lg font-semibold text-stone-900">{t('completeOrder')}</h1>
         </div>
       </header>
 
       <main className="max-w-lg mx-auto px-4 py-6">
         {/* Order Summary */}
         <div className="bg-white rounded-xl p-4 shadow-sm border border-stone-100 mb-6">
-          <h2 className="font-semibold text-stone-900 mb-3">Riepilogo ordine</h2>
+          <h2 className="font-semibold text-stone-900 mb-3">{t('orderSummary')}</h2>
           <div className="space-y-2">
             {items.map((item) => (
               <div key={item.product.id} className="flex justify-between text-sm">
@@ -72,7 +74,7 @@ export function OrderForm({ items, total, onBack, onSubmit }: OrderFormProps) {
               </div>
             ))}
             <div className="border-t border-stone-200 pt-2 mt-2 flex justify-between">
-              <span className="font-semibold text-stone-900">Totale</span>
+              <span className="font-semibold text-stone-900">{t('total')}</span>
               <span className="font-bold text-[#7B2D34]">€{total.toFixed(2)}</span>
             </div>
           </div>
@@ -82,7 +84,7 @@ export function OrderForm({ items, total, onBack, onSubmit }: OrderFormProps) {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label htmlFor="name" className="block text-sm font-medium text-stone-700 mb-1">
-              Nome *
+              {t('name')} {t('required')}
             </label>
             <input
               type="text"
@@ -91,13 +93,13 @@ export function OrderForm({ items, total, onBack, onSubmit }: OrderFormProps) {
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               className="w-full px-4 py-3 rounded-xl border border-stone-300 focus:border-[#7B2D34] focus:ring-1 focus:ring-[#7B2D34] outline-none transition-colors"
-              placeholder="Il tuo nome"
+              placeholder={t('namePlaceholder')}
             />
           </div>
 
           <div>
             <label htmlFor="phone" className="block text-sm font-medium text-stone-700 mb-1">
-              Telefono *
+              {t('phone')} {t('required')}
             </label>
             <input
               type="tel"
@@ -106,13 +108,13 @@ export function OrderForm({ items, total, onBack, onSubmit }: OrderFormProps) {
               value={formData.phone}
               onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
               className="w-full px-4 py-3 rounded-xl border border-stone-300 focus:border-[#7B2D34] focus:ring-1 focus:ring-[#7B2D34] outline-none transition-colors"
-              placeholder="333 1234567"
+              placeholder={t('phonePlaceholder')}
             />
           </div>
 
           <div>
             <label htmlFor="pickupTime" className="block text-sm font-medium text-stone-700 mb-1">
-              Orario di ritiro
+              {t('pickupTime')}
             </label>
             <input
               type="time"
@@ -125,7 +127,7 @@ export function OrderForm({ items, total, onBack, onSubmit }: OrderFormProps) {
 
           <div>
             <label htmlFor="notes" className="block text-sm font-medium text-stone-700 mb-1">
-              Note (opzionale)
+              {t('notes')} ({t('optional')})
             </label>
             <textarea
               id="notes"
@@ -133,7 +135,7 @@ export function OrderForm({ items, total, onBack, onSubmit }: OrderFormProps) {
               onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
               rows={3}
               className="w-full px-4 py-3 rounded-xl border border-stone-300 focus:border-[#7B2D34] focus:ring-1 focus:ring-[#7B2D34] outline-none transition-colors resize-none"
-              placeholder="Allergie, richieste particolari..."
+              placeholder={t('notesPlaceholder')}
             />
           </div>
 
@@ -148,7 +150,7 @@ export function OrderForm({ items, total, onBack, onSubmit }: OrderFormProps) {
             disabled={isSubmitting}
             className="w-full py-4 bg-[#7B2D34] text-white font-semibold rounded-xl hover:bg-[#5f2329] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isSubmitting ? 'Invio in corso...' : 'Invia ordine'}
+            {isSubmitting ? t('sending') : t('sendOrder')}
           </button>
         </form>
       </main>

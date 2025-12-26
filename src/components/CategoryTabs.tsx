@@ -1,5 +1,7 @@
 import type { Category } from '../types';
-import { categoryLabels, categories } from '../data/products';
+import { categories } from '../data/products';
+import { useLanguage } from '../i18n/LanguageContext';
+import type { TranslationKey } from '../i18n/translations';
 
 interface CategoryTabsProps {
   activeCategory: Category;
@@ -7,6 +9,8 @@ interface CategoryTabsProps {
 }
 
 export function CategoryTabs({ activeCategory, onCategoryChange }: CategoryTabsProps) {
+  const { t } = useLanguage();
+
   return (
     <div className="sticky top-[73px] z-40 bg-white border-b border-stone-200">
       <div className="max-w-lg mx-auto">
@@ -21,7 +25,7 @@ export function CategoryTabs({ activeCategory, onCategoryChange }: CategoryTabsP
                   : 'bg-stone-100 text-stone-700 hover:bg-stone-200'
               }`}
             >
-              {categoryLabels[category]}
+              {t(category as TranslationKey)}
             </button>
           ))}
         </nav>
