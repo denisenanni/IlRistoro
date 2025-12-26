@@ -22,7 +22,7 @@ export function Confirmation({ onNewOrder }: ConfirmationProps) {
             <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
           </svg>
         </div>
-        <h1 className="text-2xl font-bold text-stone-900 mb-2">{t('orderSent')}</h1>
+        <h1 className="text-2xl font-bold text-stone-900 mb-2 font-['Cinzel']">{t('orderSent')}</h1>
         <p className="text-stone-600 mb-6">
           {t('orderConfirmation')}
         </p>

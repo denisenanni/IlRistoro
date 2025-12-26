@@ -18,8 +18,8 @@ export function Header({ cartCount, onCartClick }: HeaderProps) {
         <div className="flex items-center gap-3">
           <img src={CONFIG.logoPath} alt={CONFIG.shopName} className="h-10 w-10 object-contain" />
           <div>
-            <h1 className="text-lg font-semibold text-[#7B2D34]">{t('shopName')}</h1>
-            <p className="text-xs text-stone-500">{t('shopSubtitle')}</p>
+            <h1 className="text-lg font-semibold text-[#7B2D34] font-['Cinzel']">{t('shopName')}</h1>
+            <p className="text-xs text-stone-500 font-['Cinzel']">{t('shopSubtitle')}</p>
           </div>
         </div>
         <div className="flex items-center gap-1">

@@ -43,7 +43,7 @@ export function Cart({
       >
         <div className="flex flex-col h-full">
           <div className="flex items-center justify-between px-4 py-4 border-b border-stone-200">
-            <h2 className="text-lg font-semibold text-stone-900">{t('cart')}</h2>
+            <h2 className="text-lg font-semibold text-stone-900 font-['Cinzel']">{t('cart')}</h2>
             <button
               onClick={onClose}
               className="p-2 rounded-full hover:bg-stone-100 transition-colors"

@@ -43,13 +43,13 @@ export function OrderForm({ items, total, onBack, onSubmit }: OrderFormProps) {
           >
             <ChevronLeftIcon className="h-6 w-6 text-stone-600" />
           </button>
-          <h1 className="text-lg font-semibold text-stone-900">{t('completeOrder')}</h1>
+          <h1 className="text-lg font-semibold text-stone-900 font-['Cinzel']">{t('completeOrder')}</h1>
         </div>
       </header>
 
       <main className="max-w-lg mx-auto px-4 py-6">
         <div className="bg-white rounded-xl p-4 shadow-sm border border-stone-100 mb-6">
-          <h2 className="font-semibold text-stone-900 mb-3">{t('orderSummary')}</h2>
+          <h2 className="font-semibold text-stone-900 mb-3 font-['Cinzel']">{t('orderSummary')}</h2>
           <div className="space-y-2">
             {items.map((item) => (
               <div key={item.product.id} className="flex justify-between text-sm">

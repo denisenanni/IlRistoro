@@ -9,3 +9,8 @@
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
+
+/* Cinzel font for headings */
+h1, h2, h3 {
+  font-family: 'Cinzel', serif;
+}

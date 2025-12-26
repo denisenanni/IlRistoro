@@ -23,7 +23,7 @@ export function Menu({ onAddToCart }: MenuProps) {
         onCategoryChange={setActiveCategory}
       />
       <main className="max-w-lg mx-auto px-4 py-4">
-        <h2 className="text-xl font-semibold text-stone-800 mb-4">
+        <h2 className="text-xl font-semibold text-stone-800 mb-4 font-['Cinzel']">
           {t(activeCategory as TranslationKey)}
         </h2>
         <div className="space-y-3">
