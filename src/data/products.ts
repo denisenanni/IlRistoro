@@ -44,15 +44,13 @@ export const products: Product[] = [
   { id: 'pf-6', name: 'Romanella', description: 'Base di zucchine, stracciatella di bufala, datterini', price: 10, category: 'pinse-fredde' },
 
   // ==================== TAGLIERI ====================
-  // TODO: Add prices for taglieri
-  { id: 'tg-1', name: 'Tagliere piccolo', description: 'Supplì, patatine, prosciutto crudo, lonza, mortadella, salame, salsicce secche, mozzarella di bufala, formaggio, olive, bruschette', price: 0, category: 'taglieri' },
-  { id: 'tg-2', name: 'Tagliere medio', description: 'Supplì, patatine, prosciutto crudo, lonza, mortadella, salame, salsicce secche, mozzarella di bufala, formaggio, olive, bruschette', price: 0, category: 'taglieri' },
-  { id: 'tg-3', name: 'Tagliere grande', description: 'Supplì, patatine, prosciutto crudo, lonza, mortadella, salame, salsicce secche, mozzarella di bufala, formaggio, olive, bruschette', price: 0, category: 'taglieri' },
+  { id: 'tg-1', name: 'Tagliere piccolo', description: 'Supplì, patatine, prosciutto crudo, lonza, mortadella, salame, salsicce secche, mozzarella di bufala, formaggio, olive, bruschette', price: 7, category: 'taglieri' },
+  { id: 'tg-2', name: 'Tagliere medio', description: 'Supplì, patatine, prosciutto crudo, lonza, mortadella, salame, salsicce secche, mozzarella di bufala, formaggio, olive, bruschette', price: 14, category: 'taglieri' },
+  { id: 'tg-3', name: 'Tagliere grande', description: 'Supplì, patatine, prosciutto crudo, lonza, mortadella, salame, salsicce secche, mozzarella di bufala, formaggio, olive, bruschette', price: 20, category: 'taglieri' },
 
   // ==================== FRITTI ====================
-  // TODO: Add prices for fritti
-  { id: 'fr-1', name: 'Supplì', price: 0, category: 'fritti' },
-  { id: 'fr-2', name: 'Patatine fritte', price: 0, category: 'fritti' },
+  { id: 'fr-1', name: 'Supplì', price: 2, category: 'fritti' },
+  { id: 'fr-2', name: 'Patatine fritte', price: 3, category: 'fritti' },
 
   // ==================== BEVANDE ====================
   { id: 'bv-1', name: 'Acqua 50cl', price: 1, category: 'bevande' },
